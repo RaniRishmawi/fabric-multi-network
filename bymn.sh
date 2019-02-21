@@ -33,7 +33,6 @@ export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
 export ORDERER_HOSTNAME="orderer-node"
 export ORG1_HOSTNAME="org1"
-export ORG2_HOSTNAME="org2"
 export SWARM_NETWORK="fabric"
 export DOCKER_STACK="fabric"
 
@@ -196,7 +195,6 @@ function networkDown() {
     rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config ./org3-artifacts/crypto-config/ channel-artifacts/org3.json
     # remove the docker-compose yaml file that was customized to the example
     rm -f docker-compose-org1.yaml
-    rm -f docker-compose-org2.yaml
   fi
 }
 
@@ -213,25 +211,19 @@ function replacePrivateKey() {
     OPTS="-i"
   fi
 
-  # Copy the org1 & org2 templates to the files that will be modified to add the private key
+  # Copy the org1  templates to the files that will be modified to add the private key
   cp docker-compose-org1-template.yaml docker-compose-org1.yaml
-  cp docker-compose-org2-template.yaml docker-compose-org2.yaml
 
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
   CURRENT_DIR=$PWD
-  cd crypto-config/peerOrganizations/org1.example.com/ca/
+  cd crypto-config/peerOrganizations/org1.savethechildren.org/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-org1.yaml
-  cd crypto-config/peerOrganizations/org2.example.com/ca/
-  PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
-  sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-org2.yaml
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
     rm docker-compose-org1.yamlt
-    rm docker-compose-org2.yamlt
   fi
 }
 
@@ -297,7 +289,7 @@ function generateCerts() {
 # These headers are important, as we will pass them in as arguments when we create
 # our artifacts.  This file also contains two additional specifications that are worth
 # noting.  Firstly, we specify the anchor peers for each Peer Org
-# (``peer0.org1.example.com`` & ``peer0.org2.example.com``).  Secondly, we point to
+# (``peer0.org1.savethechildren.org`` & ``peer0.org2.savethechildren.org``).  Secondly, we point to
 # the location of the MSP directory for each member, in turn allowing us to store the
 # root certificates for each Org in the orderer genesis block.  This is a critical
 # concept. Now any network entity communicating with the ordering service can have
@@ -361,21 +353,6 @@ function generateChannelArtifacts() {
     echo "Failed to generate anchor peer update for Org1MSP..."
     exit 1
   fi
-
-  echo
-  echo "#################################################################"
-  echo "#######    Generating anchor peer update for Org2MSP   ##########"
-  echo "#################################################################"
-  set -x
-  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate \
-    ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for Org2MSP..."
-    exit 1
-  fi
-  echo
 }
 
 # Obtain the OS and Architecture string that will be used to select the correct
@@ -392,8 +369,6 @@ CHANNEL_NAME="mychannel"
 COMPOSE_FILE=docker-compose-cli.yaml
 #
 COMPOSE_FILE_COUCH=docker-compose-couch.yaml
-# org3 docker compose file
-COMPOSE_FILE_ORG3=docker-compose-org3.yaml
 #
 # use golang as the default language for chaincode
 LANGUAGE=golang

@@ -6,8 +6,8 @@
 version: '3.4'
 
 volumes:
-  peer0.org2.example.com:
-  peer1.org2.example.com:
+  peer0.org2.savethechildren.org:
+  peer1.org2.savethechildren.org:
   
 networks:
   bymn:
@@ -21,15 +21,15 @@ services:
     image: hyperledger/fabric-ca:$IMAGE_TAG
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.org2.example.com
+      - FABRIC_CA_SERVER_CA_NAME=ca.org2.savethechildren.org
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.savethechildren.org-cert.pem
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.savethechildren.org-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY  -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org2.savethechildren.org-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY  -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/org2.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/org2.savethechildren.org/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca2
     deploy:
             mode: replicated
@@ -47,7 +47,7 @@ services:
     networks:
       bymn:
         aliases:
-          - ca.org2.example.com
+          - ca.org2.savethechildren.org
 
   org2peer0:
     container_name: org2peer0
@@ -68,10 +68,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_PEER_ID=peer0.org2.example.com
-      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.example.com:8051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
+      - CORE_PEER_ID=peer0.org2.savethechildren.org
+      - CORE_PEER_ADDRESS=peer0.org2.savethechildren.org:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.savethechildren.org:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.savethechildren.org:7051
       - CORE_PEER_LOCALMSPID=Org2MSP
 
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
@@ -79,10 +79,10 @@ services:
 
     volumes:
         - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp
-        - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
-        #- ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/ca:/etc/hyperledger/fabric/ca
-        - peer0.org2.example.com:/var/hyperledger/production
+        - ./crypto-config/peerOrganizations/org2.savethechildren.org/peers/peer0.org2.savethechildren.org/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org2.savethechildren.org/peers/peer0.org2.savethechildren.org/tls:/etc/hyperledger/fabric/tls
+        #- ./crypto-config/peerOrganizations/org2.savethechildren.org/peers/peer0.org2.savethechildren.org/ca:/etc/hyperledger/fabric/ca
+        - peer0.org2.savethechildren.org:/var/hyperledger/production
     
     deploy:
             mode: replicated
@@ -103,7 +103,7 @@ services:
     networks:
       bymn:
         aliases:
-          - peer0.org2.example.com
+          - peer0.org2.savethechildren.org
 
   org2peer1:
     container_name: org2peer1
@@ -124,10 +124,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_PEER_ID=peer1.org2.example.com
-      - CORE_PEER_ADDRESS=peer1.org2.example.com:8051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:8051
+      - CORE_PEER_ID=peer1.org2.savethechildren.org
+      - CORE_PEER_ADDRESS=peer1.org2.savethechildren.org:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.savethechildren.org:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.savethechildren.org:8051
       - CORE_PEER_LOCALMSPID=Org2MSP
 
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
@@ -135,10 +135,10 @@ services:
 
     volumes:
         - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/etc/hyperledger/fabric/msp
-        - ./crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/etc/hyperledger/fabric/tls
-        #- ./crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/ca:/etc/hyperledger/fabric/ca
-        - peer1.org2.example.com:/var/hyperledger/production
+        - ./crypto-config/peerOrganizations/org2.savethechildren.org/peers/peer1.org2.savethechildren.org/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org2.savethechildren.org/peers/peer1.org2.savethechildren.org/tls:/etc/hyperledger/fabric/tls
+        #- ./crypto-config/peerOrganizations/org2.savethechildren.org/peers/peer1.org2.savethechildren.org/ca:/etc/hyperledger/fabric/ca
+        - peer1.org2.savethechildren.org:/var/hyperledger/production
     
     deploy:
             mode: replicated
@@ -159,7 +159,7 @@ services:
     networks:
       bymn:
         aliases:
-          - peer1.org2.example.com
+          - peer1.org2.savethechildren.org
 
   org2cli:
     container_name: org2cli
@@ -182,13 +182,13 @@ services:
       - CORE_LOGGING_LEVEL=DEBUG
       #- CORE_LOGGING_LEVEL=INFO
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+      - CORE_PEER_ADDRESS=peer0.org2.savethechildren.org:7051
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.savethechildren.org/peers/peer0.org2.savethechildren.org/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.savethechildren.org/peers/peer0.org2.savethechildren.org/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.savethechildren.org/peers/peer0.org2.savethechildren.org/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.savethechildren.org/users/Admin@org2.savethechildren.org/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
